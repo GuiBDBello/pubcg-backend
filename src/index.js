@@ -8,14 +8,10 @@ const app = express();
 const PORT = 8080;
 
 app.use(cors());
-app.use(express.static(path.resolve(__dirname, '..', 'public')));
-
-// parses incoming requests with JSON payloads
 app.use(express.json());
-// parses incoming requests with urlencoded payloads
-// extended: true - parsing the URL-encoded data with the querystring library
-//app.use(express.urlencoded({ extended: true }));
 
+// app.use(express.static(path.resolve(__dirname, '..', 'public')));
+app.use('/uploads', express.static(path.resolve(__dirname, '..', 'uploads')));
 app.use(routes);
 
 async function createDatabase() {
@@ -32,27 +28,28 @@ async function createDatabase() {
     const GameJam = require('./models/gameJam');
     const Review = require('./models/review');
 
-    // Mock
-    const user = await User.create({
-        email: 'gdb@hubcg.gg',
-        password: 'gdb@hubcd.gg',
-        name: 'GuiBDBello',
-        photo: '',
-        experience: '25'
-    });
-
-    const game = await Game.create({
-        name: 'Sample Game',
-        description: 'Lorem Ipsum',
-        logo: '',
-        file: '',
-        downloadAmount: 25,
-        fundingGoal: 100000,
-        amountFunded: 2
-    });
-
     await database.sync();
     // await database.sync({ force: true });
+
+    // Mock
+    // const user = await User.create({
+    //     email: 'gdb@hubcg.gg',
+    //     password: 'gdb@hubcg.gg',
+    //     name: 'GuiBDBello',
+    //     photo: '',
+    //     experience: '25'
+    // });
+    // console.log(user);
+    // const game = await Game.create({
+    //     name: 'Sample Game',
+    //     description: 'Lorem Ipsum',
+    //     logo: '',
+    //     file: '',
+    //     downloadAmount: 25,
+    //     fundingGoal: 100000,
+    //     amountFunded: 2
+    // });
+    // console.log(game);
 }
 
 function onStart() {

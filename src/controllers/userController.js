@@ -3,7 +3,7 @@ const User = require('../models/user');
 // index, show, store, update, destroy
 module.exports = {
     async index(request, response) {
-        let users = User.findAll();
+        let users = await User.findAll();
         return response.json(users);
     },
     async show(request, response) {
