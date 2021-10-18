@@ -1,51 +1,64 @@
-const express = require('express');
 const cors = require('cors');
-const multer = require('multer');
-const unzipper = require('unzipper');
-const fs = require('fs');
+const express = require('express');
 const path = require('path');
+const routes = require('./routes');
 
+// Express middleware
 const app = express();
+const PORT = 8080;
 
 app.use(cors());
 app.use(express.static(path.resolve(__dirname, '..', 'public')));
 
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, path.resolve('uploads'));
-    },
-    filename: function (req, file, cb) {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, uniqueSuffix + '-' + file.originalname);
-    }
-});
+// parses incoming requests with JSON payloads
+app.use(express.json());
+// parses incoming requests with urlencoded payloads
+// extended: true - parsing the URL-encoded data with the querystring library
+//app.use(express.urlencoded({ extended: true }));
 
-const upload = multer({
-    limits: {
-        fileSize: 100000000 // 100 MB
-    },
-    storage: storage,
-});
+app.use(routes);
 
-app.post('/upload', upload.single('file'), async (req, res) => {
-    if (!req.file) return;
-    console.log(req.file);
+async function createDatabase() {
+    const database = require('./db');
 
-    const { originalname, filename } = req.file;
-    console.log(originalname, " | ", filename);
+    const User = require('./models/user');
+    const Badge = require('./models/badge');
+    const Group = require('./models/group');
+    
+    const Game = require('./models/game');
+    const Category = require('./models/category');
+    const Media = require('./models/media');
 
-    res.send({
-        upload: true,
-        files: req.files,
+    const GameJam = require('./models/gameJam');
+    const Review = require('./models/review');
+
+    // Mock
+    const user = await User.create({
+        email: 'gdb@hubcg.gg',
+        password: 'gdb@hubcd.gg',
+        name: 'GuiBDBello',
+        photo: '',
+        experience: '25'
     });
 
-    let fileName = res.req.file.filename;
-    console.log(fileName);
+    const game = await Game.create({
+        name: 'Sample Game',
+        description: 'Lorem Ipsum',
+        logo: '',
+        file: '',
+        downloadAmount: 25,
+        fundingGoal: 100000,
+        amountFunded: 2
+    });
 
-    fs.createReadStream(path.resolve('uploads', fileName))
-        .pipe(unzipper.Extract({ path: path.resolve('public', 'games', fileName) }));
-});
+    await database.sync();
+    // await database.sync({ force: true });
+}
 
-app.listen(8080, () => {
-    console.log('App running on http://localhost:8080');
-});
+function onStart() {
+    createDatabase();
+
+    console.log(`Server running on port ${PORT}`);
+}
+
+app.listen(PORT, onStart);
