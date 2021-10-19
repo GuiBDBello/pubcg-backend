@@ -1,7 +1,9 @@
 const Sequelize = require('sequelize');
 const database = require('../db');
+const Category = require('./category');
+const GameCategory = require('./gameCategory');
 const GameJam = require ('./gameJam');
-const Media = require ('./media');
+const Library = require('./library');
 const User = require ('./user');
 
 const Game = database.define('game', {
@@ -23,15 +25,42 @@ const Game = database.define('game', {
     amountFunded: Sequelize.DOUBLE
 });
 
-Game.belongsTo(GameJam, { constraint: true });
+// N:N Game-Category Relationship
+Category.belongsToMany(Game, {
+    through: {
+        model: GameCategory
+    },
+    constraint: true
+});
+Game.belongsToMany(Category, {
+    through: {
+        model: GameCategory
+    },
+    constraint: true
+});
+
+// 1:N GameJam-Game Relationship
 GameJam.hasMany(Game);
+Game.belongsTo(GameJam, { constraint: true });
 
-Media.belongsTo(Game, { constraint: true });
-Game.hasMany(Media);
-
+// 1:N User-Game Relationship
 Game.belongsTo(User, {
     constraint: true,
     foreignKey: 'developerId'
-})
+});
+
+// N:N Game-User Relationship
+User.belongsToMany(Game, {
+    through: {
+        model: Library
+    },
+    constraint: true
+});
+Game.belongsToMany(User, {
+    through: {
+        model: Library
+    },
+    constraint: true
+});
 
 module.exports = Game;

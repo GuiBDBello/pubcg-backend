@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize');
 const database = require('../db');
+const Game = require ('./game');
 
 const Media = database.define('media', {
     id: {
@@ -14,5 +15,9 @@ const Media = database.define('media', {
     },
     description: Sequelize.STRING(100),
 });
+
+// 1:N Game-Media Relationship
+Game.hasMany(Media);
+Media.belongsTo(Game, { constraint: true });
 
 module.exports = Media;

@@ -12,6 +12,7 @@ const GameJam = database.define('gameJam', {
         type: Sequelize.STRING(100),
         allowNull: false
     },
+    description: Sequelize.STRING(1000),
     dateTimeStart: Sequelize.DATE,
     dateTimeEnd: Sequelize.DATE
 });
