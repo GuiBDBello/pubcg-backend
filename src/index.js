@@ -46,7 +46,7 @@ function onStart() {
 
 app.listen(PORT, onStart);
 
-function mockData(isLogging) {
+async function mockData(isLogging) {
     const badge = await Badge.create({
         name: 'Played 100 Games',
         logo: ''
