@@ -11,7 +11,7 @@ module.exports = {
         return response.json(game);
     },
     async store(request, response) {
-        let { name, description, logo, file, fundingGoal } = request.body;
+        let { name, description, logo, file, fundingGoal, gameJamId, developerId } = request.body;
         let game = await Game.create({
             name,
             description,
@@ -19,7 +19,9 @@ module.exports = {
             file,
             downloadAmount: 0,
             fundingGoal,
-            amountFunded: 0
+            amountFunded: 0,
+            gameJamId,
+            developerId
         });
         return response.json(game);
     },
@@ -29,8 +31,7 @@ module.exports = {
             name,
             description,
             logo,
-            file,
-            fundingGoal
+            file
         }, {
             where: {
                 id: request.params.id
