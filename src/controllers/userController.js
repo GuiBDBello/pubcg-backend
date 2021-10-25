@@ -18,6 +18,12 @@ module.exports = {
             name,
             photo,
             experience: 0
+        }).then((res) => {
+            return res;
+        }).catch((error) => {
+            if (error.errors[0].message) return error.errors[0].message;
+            if (error.name) return error.name;
+            return error;
         });
         return response.json(user);
     },
@@ -32,6 +38,12 @@ module.exports = {
             where: {
                 id: request.params.id
             }
+        }).then((res) => {
+            return res;
+        }).catch((error) => {
+            if (error.errors[0].message) return error.errors[0].message;
+            if (error.name) return error.name;
+            return error;
         });
         return response.json(user);
     },

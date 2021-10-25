@@ -18,8 +18,8 @@ const Game = database.define('game', {
         allowNull: false
     },
     description: Sequelize.STRING(1000),
-    logo: Sequelize.BLOB,
-    file: Sequelize.BLOB,
+    logo: Sequelize.STRING(200),
+    file: Sequelize.STRING(200),
     downloadAmount: Sequelize.BIGINT,
     fundingGoal: Sequelize.DOUBLE,
     amountFunded: Sequelize.DOUBLE

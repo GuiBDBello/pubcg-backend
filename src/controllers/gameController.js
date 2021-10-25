@@ -1,5 +1,24 @@
 const Game = require('../models/game');
 
+const fs = require('fs');
+const path = require('path');
+const unzipper = require('unzipper');
+
+function moveFile(oldPath, newPath, directory) {
+    let directoryCreated = fs.mkdirSync(directory, { recursive: true });
+    console.log('directoryCreated', directoryCreated);
+
+    fs.rename(oldPath, newPath, function (error) {
+        if (error) throw error;
+        console.log('Successfully renamed - AKA moved!')
+    })
+}
+
+function extractFile(file, destination) {
+    fs.createReadStream(file)
+        .pipe(unzipper.Extract({ path: destination }));
+}
+
 // index, show, store, update, destroy
 module.exports = {
     async index(request, response) {
@@ -11,22 +30,48 @@ module.exports = {
         return response.json(game);
     },
     async store(request, response) {
-        let { name, description, logo, file, fundingGoal, gameJamId, developerId } = request.body;
+        console.log('files', request.files);
+
+        let originalFilename = request.files.file[0].originalname.split(".")[0];
+
+        let gameFilename = request.files.file[0].filename;
+        let logoFilename = request.files.logo[0].filename;
+        console.log('gameFilename', gameFilename);
+        console.log('logoFilename', logoFilename);
+
+        let filePath = path.resolve('uploads', gameFilename)
+        let logoPath = path.resolve('uploads', logoFilename);
+        console.log('filePath', filePath);
+        console.log('logoPath', logoPath);
+
+        let gameDirectory = gameFilename.split(".")[0];
+        console.log();
+
+        let fileDestination = path.resolve('public', 'games', gameDirectory);
+        let logoDestination = path.resolve('public', 'games', gameDirectory, logoFilename);
+        console.log('fileDestination', fileDestination);
+        console.log('logoDestination', logoDestination);
+
+        extractFile(filePath, fileDestination);
+        moveFile(logoPath, logoDestination, fileDestination);
+
+        let { name, description, fundingGoal, gameJamId, developerId } = request.body;
         let game = await Game.create({
             name,
             description,
-            logo,
-            file,
+            logo: `${process.env.ENDPOINT}/games/${gameDirectory}/${logoFilename}`,
+            file: `${process.env.ENDPOINT}/games/${gameDirectory}/${originalFilename}`,
             downloadAmount: 0,
             fundingGoal,
             amountFunded: 0,
             gameJamId,
             developerId
         });
+
         return response.json(game);
     },
     async update(request, response) {
-        let { name, description, logo, file, fundingGoal } = request.body;
+        let { name, description, logo, file } = request.body;
         let game = await Game.update({
             name,
             description,
