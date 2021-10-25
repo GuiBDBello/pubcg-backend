@@ -4,7 +4,6 @@ const path = require('path');
 
 const BadgeController = require('./controllers/badgeController');
 const CategoryController = require('./controllers/categoryController');
-const FileController = require('./controllers/fileController');
 const GameController = require('./controllers/gameController');
 const GameJamController = require('./controllers/gameJamController');
 const GroupController = require('./controllers/groupController');
