@@ -23,13 +23,14 @@ const UserBadge = require('./models/userBadge');
 
 // Express Middleware
 const app = express();
-const PORT = 8080;
 
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static(path.resolve(__dirname, '..', 'public')));
+app.use(express.static(path.resolve(__dirname, '..', 'public', 'games')));
+app.use(express.static(path.resolve(__dirname, '..', 'public', 'images')));
 // app.use('/uploads', express.static(path.resolve(__dirname, '..', 'uploads')));
 app.use('/api', routes);
 
@@ -46,10 +47,10 @@ function onStart() {
     // Add mock data to the database.
     mockData(false);
 
-    console.log(`Server running on port ${PORT}`);
+    console.log(`Server running on port ${process.env.PORT}`);
 }
 
-app.listen(PORT, onStart);
+app.listen(process.env.PORT || 5000, onStart);
 
 async function mockData(isLogging) {
     const badge = await Badge.create({
