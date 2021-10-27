@@ -32,10 +32,16 @@ module.exports = {
     async store(request, response) {
         console.log('files', request.files);
 
-        let originalFilename = request.files.file[0].originalname.split(".")[0];
+        let logo = request.files.logo[0];
+        let media = request.files.media;
+        let file = request.files.file[0];
+        console.log('file', file);
+        console.log('logo', logo);
 
-        let gameFilename = request.files.file[0].filename;
-        let logoFilename = request.files.logo[0].filename;
+        let originalFilename = file.originalname.split(".")[0];
+
+        let gameFilename = file.filename;
+        let logoFilename = logo.filename;
         console.log('gameFilename', gameFilename);
         console.log('logoFilename', logoFilename);
 
@@ -45,7 +51,7 @@ module.exports = {
         console.log('logoPath', logoPath);
 
         let gameDirectory = gameFilename.split(".")[0];
-        console.log();
+        console.log('gameDirectory', gameDirectory);
 
         let fileDestination = path.resolve('public', 'games', gameDirectory);
         let logoDestination = path.resolve('public', 'games', gameDirectory, logoFilename);

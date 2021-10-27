@@ -44,7 +44,7 @@ async function createDatabase() {
 function onStart() {
     createDatabase();
     // Add mock data to the database.
-    // mockData(false);
+    mockData(false);
 
     console.log(`Server running on port ${PORT}`);
 }
@@ -54,7 +54,7 @@ app.listen(PORT, onStart);
 async function mockData(isLogging) {
     const badge = await Badge.create({
         name: "Played 100 Games",
-        logo: ""
+        logo: "https://bropenbadge.com/wp-content/uploads/2017/10/logo.png"
     });
     if (isLogging) console.log(badge);
 
@@ -73,17 +73,15 @@ async function mockData(isLogging) {
 
     const group = await Group.create({
         name: "Costão Gamers",
-        logo: "",
+        logo: "https://portal.if.uff.br/espaco-de-convivencia/wp-content/plugins/profilegrid-user-profiles-groups-and-communities/public/partials/images/default-group.png",
         description: "Studio de desenvolvimento do HubCG."
     });
     if (isLogging) console.log(group);
 
     const user = await User.create({
         email: "gdb@hubcg.gg",
-        password: "gdb@hubcg.gg",
         name: "GuiBDBello",
-        photo: "",
-        experience: "25"
+        photo: "https://cdn-icons-png.flaticon.com/512/149/149071.png",
     });
     if (isLogging) console.log(user);
 
@@ -91,13 +89,12 @@ async function mockData(isLogging) {
     await user.addGroup(group);
 
     const game = await Game.create({
-        name: "Sample Game",
+        name: "Sample",
         description: "Lorem Ipsum",
-        logo: "",
-        file: "",
-        downloadAmount: 25,
+        logo: "https://cf.geekdo-images.com/0_kQMpe6dYXAIt-MnGdI9g__opengraph_letterbox/img/CpaYuHnToSCt0aa6ciVK9t69ULI=/fit-in/1200x630/filters:fill(auto):strip_icc()/pic648549.jpg",
+        file: "https://www.youtube.com/embed/jC7l8Q7Chs0",
         fundingGoal: 100000,
-        amountFunded: 2,
+        amountFunded: 200,
         gameJamId: gameJam.id,
         developerId: user.id
     });
@@ -107,11 +104,32 @@ async function mockData(isLogging) {
     await game.addUser(user);
 
     const media = await Media.create({
-        file: "",
+        file: "http://www.vintagecomputing.com/wp-content/images/pcworld/evolution_vgmedia_small.jpg",
         description: "Main Menu Screenshot",
         gameId: game.id
     });
     if (isLogging) console.log(media);
+
+    const media2 = await Media.create({
+        file: "https://m.media-amazon.com/images/I/51SJFSRe-XL._AC_SX522_.jpg",
+        description: "Level Select Screenshot",
+        gameId: game.id
+    });
+    if (isLogging) console.log(media2);
+
+    const media3 = await Media.create({
+        file: "https://s2.glbimg.com/N5c1MI6qCy0oWVijw9PIaUjfT_k=/0x0:4800x3200/924x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_f035dd6fd91c438fa04ab718d608bbaa/internal_photos/bs/2019/V/d/1L7cdjRvCGic45AZu5Yg/jeshoots-com-ecktzgjc-iu-unsplash.jpg",
+        description: "Game Screenshot",
+        gameId: game.id
+    });
+    if (isLogging) console.log(media3);
+
+    const media4 = await Media.create({
+        file: "https://static.independent.co.uk/s3fs-public/thumbnails/image/2017/12/28/10/gaming-disorder-reaction.jpg?width=982&height=726&auto=webp&quality=75",
+        description: "Gameplay Screenshot",
+        gameId: game.id
+    });
+    if (isLogging) console.log(media4);
 
     const review = await Review.create({
         score: "9.5",
