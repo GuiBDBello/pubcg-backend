@@ -65,8 +65,8 @@ module.exports = {
         let game = await Game.create({
             name,
             description,
-            logo: `${process.env.ENDPOINT}/games/${gameDirectory}/${logoFilename}`,
-            file: `${process.env.ENDPOINT}/games/${gameDirectory}/${originalFilename}`,
+            logo: `${process.env.PUBLIC_DIR}/games/${gameDirectory}/${logoFilename}`,
+            file: `${process.env.PUBLIC_DIR}/games/${gameDirectory}/${originalFilename}`,
             downloadAmount: 0,
             fundingGoal,
             amountFunded: 0,
