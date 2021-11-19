@@ -11,7 +11,7 @@ const Review = database.define('review', {
         primaryKey: true
     },
     score: {
-        type: Sequelize.NUMBER,
+        type: Sequelize.DOUBLE,
         allowNull: false
     },
     description: Sequelize.STRING(1000)
