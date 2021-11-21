@@ -32,7 +32,6 @@ routes.get('/', (request, response) => {
     response.send(`<h1>Hello World!</h1>
     <h2>PubCG environment variables (some of them).</h2>
     <ul>
-        <li>ALLOWED_ORIGINS: ${process.env.ALLOWED_ORIGINS}</li>
         <li>DB_FORCE: ${process.env.DB_FORCE}</li>
         <li>MOCK: ${process.env.MOCK}</li>
         <li>MOCK_IS_LOGGING: ${process.env.MOCK_IS_LOGGING}</li>
