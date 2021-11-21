@@ -28,6 +28,21 @@ const upload = multer({
 
 const routes = Router();
 
+routes.get('/', (request, response) => {
+    response.send(`<h1>Hello World!</h1>
+    <h2>PubCG environment variables (some of them).</h2>
+    <ul>
+        <li>ALLOWED_ORIGINS: ${process.env.ALLOWED_ORIGINS}</li>
+        <li>DB_FORCE: ${process.env.DB_FORCE}</li>
+        <li>MOCK: ${process.env.MOCK}</li>
+        <li>MOCK_IS_LOGGING: ${process.env.MOCK_IS_LOGGING}</li>
+        <li>NODE_ENV: ${process.env.NODE_ENV}</li>
+        <li>PORT: ${process.env.PORT}</li>
+        <li>PUBLIC_DIR: ${process.env.PUBLIC_DIR}</li>
+    </ul>
+    <h1>Goodbye World!</h1>`);
+});
+
 // Badges
 routes.get('/badges', BadgeController.index);
 routes.get('/badges/:id', BadgeController.show);
