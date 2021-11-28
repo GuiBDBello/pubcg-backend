@@ -1,5 +1,7 @@
 # PubCG (backend)
 
+Aplicação backend desenvolvida para o Desafio de Inovação: Gaming for Life Space organizado pelo HubCG.
+
 ## .env
 
 ```
