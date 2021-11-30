@@ -12,7 +12,7 @@ const Group = database.define('group', {
         type: Sequelize.STRING(100),
         allowNull: false
     },
-    logo: Sequelize.BLOB,
+    logo: Sequelize.STRING(1000),
     description: Sequelize.STRING(400)
 });
 

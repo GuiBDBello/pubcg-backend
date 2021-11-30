@@ -10,7 +10,7 @@ const Media = database.define('media', {
         primaryKey: true
     },
     file: {
-        type: Sequelize.BLOB,
+        type: Sequelize.STRING(1000),
         allowNull: false
     },
     description: Sequelize.STRING(100),

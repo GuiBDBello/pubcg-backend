@@ -12,7 +12,7 @@ const Badge = database.define('badge', {
         type: Sequelize.STRING(100),
         allowNull: false
     },
-    logo: Sequelize.BLOB
+    logo: Sequelize.STRING(1000)
 });
 
 module.exports = Badge;

@@ -19,7 +19,7 @@ const Game = database.define('game', {
     },
     description: Sequelize.STRING(1000),
     logo: Sequelize.STRING(200),
-    file: Sequelize.STRING(200),
+    file: Sequelize.STRING(1000),
     downloadAmount: Sequelize.BIGINT,
     fundingGoal: Sequelize.DOUBLE,
     amountFunded: Sequelize.DOUBLE
