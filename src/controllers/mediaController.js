@@ -1,8 +1,16 @@
-const Media = require('../models/media');
+const Media = require("../models/media");
 
 module.exports = {
     async index(request, response) {
         let medias = await Media.findAll();
+        return response.json(medias);
+    },
+    async indexGame(request, response) {
+        let medias = await Media.findAll({
+            where: {
+                gameId: request.params.id
+            }
+        });
         return response.json(medias);
     },
     async show(request, response) {

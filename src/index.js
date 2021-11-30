@@ -118,32 +118,25 @@ async function mockData(isLogging) {
     await game.addUser(user);
 
     const media = await Media.create({
-        file: "http://www.vintagecomputing.com/wp-content/images/pcworld/evolution_vgmedia_small.jpg",
-        description: "Main Menu Screenshot",
+        file: "https://m.media-amazon.com/images/I/51SJFSRe-XL._AC_SX522_.jpg",
+        description: "Level Select Screenshot",
         gameId: game.id
     });
     if (isLogging) console.log(media);
 
     const media2 = await Media.create({
-        file: "https://m.media-amazon.com/images/I/51SJFSRe-XL._AC_SX522_.jpg",
-        description: "Level Select Screenshot",
+        file: "https://s2.glbimg.com/N5c1MI6qCy0oWVijw9PIaUjfT_k=/0x0:4800x3200/924x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_f035dd6fd91c438fa04ab718d608bbaa/internal_photos/bs/2019/V/d/1L7cdjRvCGic45AZu5Yg/jeshoots-com-ecktzgjc-iu-unsplash.jpg",
+        description: "Game Screenshot",
         gameId: game.id
     });
     if (isLogging) console.log(media2);
 
     const media3 = await Media.create({
-        file: "https://s2.glbimg.com/N5c1MI6qCy0oWVijw9PIaUjfT_k=/0x0:4800x3200/924x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_f035dd6fd91c438fa04ab718d608bbaa/internal_photos/bs/2019/V/d/1L7cdjRvCGic45AZu5Yg/jeshoots-com-ecktzgjc-iu-unsplash.jpg",
-        description: "Game Screenshot",
-        gameId: game.id
-    });
-    if (isLogging) console.log(media3);
-
-    const media4 = await Media.create({
         file: "https://static.independent.co.uk/s3fs-public/thumbnails/image/2017/12/28/10/gaming-disorder-reaction.jpg?width=982&height=726&auto=webp&quality=75",
         description: "Gameplay Screenshot",
         gameId: game.id
     });
-    if (isLogging) console.log(media4);
+    if (isLogging) console.log(media3);
 
     const review = await Review.create({
         score: "9.5",

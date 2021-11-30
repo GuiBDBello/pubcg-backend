@@ -22,7 +22,7 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({
-    limits: { fileSize: 100000000 /* 100 MB */ },
+    limits: { fileSize: 250000000 /* 250 MB */ },
     storage: storage,
 });
 
@@ -62,7 +62,7 @@ routes.get('/games/:id', GameController.show);
 routes.post('/games', upload.fields([
     { name: 'file', maxCount: 1 },
     { name: 'logo', maxCount: 1 },
-    { name: 'media', maxCount: 8 }
+    { name: 'media', maxCount: 8 },
 ]), GameController.store);
 routes.put('/games/:id', GameController.update);
 routes.delete('/games/:id', GameController.destroy);
@@ -83,8 +83,11 @@ routes.delete('/groups/:id', GroupController.destroy);
 
 // Medias
 routes.get('/medias', MediaController.index);
+routes.get('/medias/game/:id', MediaController.indexGame);
 routes.get('/medias/:id', MediaController.show);
-routes.post('/medias', MediaController.store);
+routes.post('/medias', /*upload.fields([
+    { name: 'media', maxCount: 8 },
+]), */MediaController.store);
 routes.put('/medias/:id', MediaController.update);
 routes.delete('/medias/:id', MediaController.destroy);
 

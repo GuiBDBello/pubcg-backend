@@ -1,63 +1,109 @@
-const Game = require('../models/game');
+const Game = require("../models/game");
+// Má prática, eu sei, mas to sem tempo
+const Media = require("../models/media");
 
-const fs = require('fs');
-const path = require('path');
-const unzipper = require('unzipper');
+const fs = require("fs");
+const fsPromises = require("fs/promises");
+const path = require("path");
+const unzipper = require("unzipper");
 
-const s3 = require('../s3Client');
-
-function moveFile(oldPath, newPath, directory) {
-    let directoryCreated = fs.mkdirSync(directory, { recursive: true });
-    console.log('directoryCreated', directoryCreated);
-
-    fs.rename(oldPath, newPath, function (error) {
-        if (error) throw error;
-        console.log('Successfully renamed - AKA moved!')
-    })
-}
+const s3 = require("../s3Client");
 
 function extractFile(file, destination) {
     return new Promise((resolve, reject) => {
         fs.createReadStream(file)
             .pipe(unzipper.Extract({ path: destination })
-                .on('close', () => {
+                .on("close", () => {
                     resolve();
                 }));
         // reject();
     });
 }
 
+async function moveFile(oldPath, newPath, directory) {
+    console.log("Moving from oldPath", oldPath, "\nto newPath", newPath, "\ninto directory", directory);
+    // const fsPromises = fs.promises;
+
+    return new Promise((resolve, reject) => {
+        fs.mkdir(directory, { recursive: true }, (err) => {
+            if (err) reject();
+            else resolve();
+        });
+    }).then(() => {
+        fs.rename(oldPath, newPath, (err) => {
+            if (err) throw err;
+        });
+    }).catch((err) => {
+        if (err) throw err;
+    });
+    // try {
+    //     let directoryCreated = fs.mkdir(directory, { recursive: true }, (err) => {
+    //         if (err) throw err;
+    //     });
+    //     console.log("directoryCreated", directoryCreated);
+
+    //     fs.rename(oldPath, newPath, (err) => {
+    //         if (err) throw err;
+    //     });
+    // } catch(e) {
+    //     console.error(e);
+    // }
+
+    // try {
+    //     await fsPromises.mkdir(directory, { recursive: true })
+    //         .then(() => {
+    //             console.log("Directory created successfully!");
+    //         }).catch((err) => {
+    //             console.log("Failed to create directory.", err);
+    //         });
+
+    //     await fsPromises.rename(oldPath, newPath)
+    //         .then((data) => {
+    //             console.log("Successfully renamed - AKA moved!", data);
+    //         }).catch((err) => {
+    //             console.error("Error renaming.", err);
+    //         });
+    // } catch (error) {
+    //     console.error("There was an error:", error.message);
+    // }
+}
+
 async function getFileData(request) {
-    console.log('files', request.files);
+    console.log("files", request.files);
 
     let logo = request.files.logo[0];
-    let media = request.files.media;
     let file = request.files.file[0];
 
     let gameDirectory = file.filename.split(".")[0];
-    console.log('gameDirectory', gameDirectory);
+    console.log("gameDirectory", gameDirectory);
 
     let logoFilename = logo.filename;
 
-    let fileDestination = path.resolve('public', 'games', gameDirectory);
-    let logoDestination = path.resolve('public', 'games', gameDirectory, logoFilename);
+    let fileDestination = path.resolve("public", "games", gameDirectory);
+    let logoDestination = path.resolve("public", "games", gameDirectory, logoFilename);
+    let mediaDestination = path.resolve("public", "games", gameDirectory, "medias");
 
-    console.log('fileDestination', fileDestination);
-    console.log('logoDestination', logoDestination);
-
-    console.log('file.path', file.path);
-    console.log('fileDestination', fileDestination);
+    console.log("file.path", file.path);
+    console.log("fileDestination", fileDestination);
+    console.log("logoDestination", logoDestination);
+    console.log("mediaDestination", mediaDestination);
 
     await extractFile(file.path, fileDestination)
-        .then(data => console.log('Extracted data:\n', data))
+        .then(data => console.log("Extracted data!"))
         .catch(err => console.error(err));
 
-    moveFile(logo.path, logoDestination, fileDestination);
+    await moveFile(logo.path, logoDestination, fileDestination);
 
     let originalFilename = file.originalname.split(".")[0];
-    console.log('originalFilename', originalFilename);
+    console.log("originalFilename", originalFilename);
 
-    return { gameDirectory, logoFilename, fileDestination, originalFilename };
+    return {
+        gameDirectory,
+        logoFilename,
+        originalFilename,
+        fileDestination,
+        mediaDestination,
+    };
 }
 
 // index, show, store, update, destroy
@@ -73,27 +119,24 @@ module.exports = {
     async store(request, response) {
         let logo;
         let file;
-        let gameDirectory;
-        let fileDestination;
-        let originalFilename;
+        let mediaPath;
 
+        let data;
         try {
-            const fileData = await getFileData(request);
-            gameDirectory = fileData.gameDirectory;
-            fileDestination = fileData.fileDestination;
-            originalFilename = fileData.originalFilename;
-            logo = `${process.env.PUBLIC_DIR}/games/${gameDirectory}/${fileData.logoFilename}`;
-            file = `${process.env.PUBLIC_DIR}/games/${gameDirectory}/${originalFilename}/index.html`
+            data = await getFileData(request);
+            logo = `${process.env.PUBLIC_DIR}/games/${data.gameDirectory}/${data.logoFilename}`;
+            file = `${process.env.PUBLIC_DIR}/games/${data.gameDirectory}/${data.originalFilename}/index.html`;
+            mediaPath = `${process.env.PUBLIC_DIR}/games/${data.gameDirectory}/medias`;
+
+            if (process.env.NODE_ENV.toUpperCase() === "PRD"
+                && data.gameDirectory && data.fileDestination) {
+
+                await s3.uploadFolder(data.fileDestination, data.gameDirectory);
+            }
         } catch (e) {
             console.error(e);
             logo = "";
             file = "";
-        }
-
-        if (process.env.NODE_ENV.toUpperCase() === 'PRD'
-            && gameDirectory && fileDestination) {
-
-            s3.uploadFolderToS3(fileDestination, gameDirectory, process.env.AWS_S3_BUCKET);
         }
 
         let { name, description, fundingGoal, gameJamId, developerId } = request.body;
@@ -106,7 +149,31 @@ module.exports = {
             fundingGoal,
             amountFunded: 0,
             gameJamId,
-            developerId
+            developerId,
+        });
+
+        let mediaFiles = request.files.media;
+        mediaFiles.map(async (mediaFile) => {
+            console.log("data.mediaDestination", data.mediaDestination);
+            console.log("mediaFile.filename", mediaFile.filename);
+            let mediaDestination = path.resolve(data.mediaDestination, mediaFile.filename);
+            await moveFile(mediaFile.path, mediaDestination, path.resolve(data.fileDestination, "medias"));
+
+            let file = `${mediaPath}/${mediaFile.filename}`;
+            console.log("media file", file);
+
+            let media = await Media.create({
+                file: file,
+                description: "",
+                gameId: game.id,
+            })
+            console.log("media", media);
+
+            if (process.env.NODE_ENV.toUpperCase() === "PRD"
+                && data.gameDirectory && data.fileDestination) {
+
+                await s3.uploadFile(mediaFile.filename, data.gameDirectory);
+            }
         });
 
         return response.json(game);
