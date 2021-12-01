@@ -32,11 +32,6 @@ function walkSync(currentDirPath, callback) {
 
 module.exports = {
     async uploadFile(fileName, filePath, mimeType) {
-        AWS.config.update({
-            "accessKeyId": process.env.AWS_ACCESS_KEY_ID,
-            "secretAccessKey": process.env.AWS_SECRET_ACCESS_KEY,
-            "region": process.env.AWS_REGION
-        });
         const s3 = new AWS.S3({ region: process.env.AWS_REGION });
 
         const params = {
@@ -52,21 +47,17 @@ module.exports = {
         return data.Location;
     },
     async uploadFolder(s3Path, dirName) {
-        AWS.config.update({
-            "accessKeyId": process.env.AWS_ACCESS_KEY_ID,
-            "secretAccessKey": process.env.AWS_SECRET_ACCESS_KEY,
-            "region": process.env.AWS_REGION
-        });
         const s3 = new AWS.S3({ region: process.env.AWS_REGION });
 
         walkSync(s3Path, async function (filePath/*, stat*/) {
-            // console.log('filePath', filePath);
+            console.log('filePath', filePath);
 
             let bucketPath = filePath.substring(s3Path.length + 1).replace(/\\/g, '/');
             // console.log('bucketPath', bucketPath);
+            let bucketName = process.env.AWS_S3_BUCKET;
 
             let params = {
-                Bucket: process.env.AWS_S3_BUCKET,
+                Bucket: bucketName,
                 Key: `public/games/${dirName}/${bucketPath}`,
                 Body: fs.readFileSync(filePath),
                 ACL: 'public-read',
@@ -76,8 +67,8 @@ module.exports = {
 
             await s3.putObject(params).promise()
                 .then((data) => {
-                    console.log(data);
-                    console.log('Successfully uploaded ' + bucketPath + ' to ' + process.env.AWS_S3_BUCKET);
+                    console.log("data", data);
+                    console.log("Successfully uploaded " + bucketPath + " to " + bucketName);
                     return data;
                 }).catch((err) => {
                     console.error(err);
