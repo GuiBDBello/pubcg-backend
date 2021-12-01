@@ -35,7 +35,7 @@ module.exports = {
 
         const params = {
             Bucket: process.env.AWS_S3_BUCKET,
-            Key: `public/games/medias/${fileName}`,
+            Key: fileName,
             Body: fs.readFileSync(filePath),
             ACL: 'public-read',
             // ContentType: getContentType(filePath),

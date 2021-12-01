@@ -3,7 +3,6 @@ const Game = require("../models/game");
 const Media = require("../models/media");
 
 const fs = require("fs");
-const fsPromises = require("fs/promises");
 const path = require("path");
 const unzipper = require("unzipper");
 
@@ -157,7 +156,7 @@ module.exports = {
             console.log("data.mediaDestination", data.mediaDestination);
             console.log("mediaFile.filename", mediaFile.filename);
             let mediaDestination = path.resolve(data.mediaDestination, mediaFile.filename);
-            await moveFile(mediaFile.path, mediaDestination, path.resolve(data.fileDestination, "medias"));
+            await moveFile(mediaFile.path, mediaDestination, data.mediaDestination);
 
             let file = `${mediaPath}/${mediaFile.filename}`;
             console.log("media file", file);
@@ -172,7 +171,7 @@ module.exports = {
             if (process.env.NODE_ENV.toUpperCase() === "PRD"
                 && data.gameDirectory && data.fileDestination) {
 
-                await s3.uploadFile(mediaFile.filename, data.gameDirectory);
+                await s3.uploadFile(`public/games/medias/${mediaFile.filename}`, data.gameDirectory);
             }
         });
 
