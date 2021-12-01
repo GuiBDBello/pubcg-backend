@@ -35,36 +35,6 @@ async function moveFile(oldPath, newPath, directory) {
     }).catch((err) => {
         if (err) throw err;
     });
-    // try {
-    //     let directoryCreated = fs.mkdir(directory, { recursive: true }, (err) => {
-    //         if (err) throw err;
-    //     });
-    //     console.log("directoryCreated", directoryCreated);
-
-    //     fs.rename(oldPath, newPath, (err) => {
-    //         if (err) throw err;
-    //     });
-    // } catch(e) {
-    //     console.error(e);
-    // }
-
-    // try {
-    //     await fsPromises.mkdir(directory, { recursive: true })
-    //         .then(() => {
-    //             console.log("Directory created successfully!");
-    //         }).catch((err) => {
-    //             console.log("Failed to create directory.", err);
-    //         });
-
-    //     await fsPromises.rename(oldPath, newPath)
-    //         .then((data) => {
-    //             console.log("Successfully renamed - AKA moved!", data);
-    //         }).catch((err) => {
-    //             console.error("Error renaming.", err);
-    //         });
-    // } catch (error) {
-    //     console.error("There was an error:", error.message);
-    // }
 }
 
 async function getFileData(request) {
@@ -171,7 +141,8 @@ module.exports = {
             if (process.env.NODE_ENV.toUpperCase() === "PRD"
                 && data.gameDirectory && data.fileDestination) {
 
-                await s3.uploadFile(`public/games/medias/${mediaFile.filename}`, data.gameDirectory);
+                await s3.uploadFile(`public/games/medias/${mediaFile.filename}`,
+                    `${data.fileDestination}/${data.gameDirectory}`);
             }
         });
 

@@ -8,6 +8,7 @@ AWS.config.apiVersions = {
 
 function getContentType(filePath) {
     if (filePath.endsWith('.css')) return 'text/css';
+    else if (filePath.endsWith('.gif')) return 'image/gif';
     else if (filePath.endsWith('.html')) return 'text/html';
     else if (filePath.endsWith('.ico')) return 'image/x-icon';
     else if (filePath.endsWith('.js')) return 'application/javascript';
@@ -31,6 +32,7 @@ function walkSync(currentDirPath, callback) {
 
 module.exports = {
     async uploadFile(fileName, filePath, mimeType) {
+        AWS.config.update();
         const s3 = new AWS.S3({ region: process.env.AWS_REGION });
 
         const params = {
@@ -46,6 +48,7 @@ module.exports = {
         return data.Location;
     },
     async uploadFolder(s3Path, dirName) {
+        AWS.config.update();
         const s3 = new AWS.S3({ region: process.env.AWS_REGION });
 
         walkSync(s3Path, async function (filePath/*, stat*/) {
@@ -73,14 +76,6 @@ module.exports = {
                 console.error(err);
                 return err;
             });
-            // s3.putObject(params, function (err, data) {
-            //     if (err) {
-            //         console.error(err);
-            //     } else {
-            //         console.log(data);
-            //         console.log('Successfully uploaded ' + bucketPath + ' to ' + bucketName);
-            //     }
-            // });
         });
     }
 }
