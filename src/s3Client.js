@@ -32,7 +32,11 @@ function walkSync(currentDirPath, callback) {
 
 module.exports = {
     async uploadFile(fileName, filePath, mimeType) {
-        AWS.config.update();
+        AWS.config.update({
+            "accessKeyId": process.env.AWS_ACCESS_KEY_ID,
+            "secretAccessKey": process.env.AWS_SECRET_ACCESS_KEY,
+            "region": process.env.AWS_REGION
+        });
         const s3 = new AWS.S3({ region: process.env.AWS_REGION });
 
         const params = {
@@ -48,7 +52,11 @@ module.exports = {
         return data.Location;
     },
     async uploadFolder(s3Path, dirName) {
-        AWS.config.update();
+        AWS.config.update({
+            "accessKeyId": process.env.AWS_ACCESS_KEY_ID,
+            "secretAccessKey": process.env.AWS_SECRET_ACCESS_KEY,
+            "region": process.env.AWS_REGION
+        });
         const s3 = new AWS.S3({ region: process.env.AWS_REGION });
 
         walkSync(s3Path, async function (filePath/*, stat*/) {
@@ -68,14 +76,14 @@ module.exports = {
             console.log(params);
 
             await s3.putObject(params).promise()
-            .then((data) => {
-                console.log(data);
-                console.log('Successfully uploaded ' + bucketPath + ' to ' + bucketName);
-                return data;
-            }).catch((err) => {
-                console.error(err);
-                return err;
-            });
+                .then((data) => {
+                    console.log(data);
+                    console.log('Successfully uploaded ' + bucketPath + ' to ' + bucketName);
+                    return data;
+                }).catch((err) => {
+                    console.error(err);
+                    return err;
+                });
         });
     }
 }
