@@ -23,6 +23,7 @@ const User = database.define('user', {
         type: Sequelize.STRING(100),
         allowNull: false
     },
+    description: Sequelize.STRING(400),
     photo: Sequelize.STRING(1000),
     experience: Sequelize.DECIMAL
 });

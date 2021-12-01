@@ -95,6 +95,7 @@ async function mockData(isLogging) {
     const user = await User.create({
         email: "gdb@hubcg.gg",
         name: "GuiBDBello",
+        description: "Desenvolvedor de software que busca se tornar um desenvolvedor de jogos.",
         photo: "https://cdn-icons-png.flaticon.com/512/149/149071.png",
     });
     if (isLogging) console.log(user);
