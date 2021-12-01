@@ -93,6 +93,7 @@ routes.delete("/medias/:id", MediaController.destroy);
 
 // Reviews
 routes.get("/reviews", ReviewController.index);
+routes.get("/reviews/game/:id", ReviewController.indexGame);
 routes.get("/reviews/:id", ReviewController.show);
 routes.post("/reviews", ReviewController.store);
 routes.put("/reviews/:id", ReviewController.update);

@@ -1,8 +1,18 @@
 const Review = require('../models/review');
+const User = require('../models/user');
 
 module.exports = {
     async index(request, response) {
         let reviews = await Review.findAll();
+        return response.json(reviews);
+    },
+    async indexGame(request, response) {
+        let reviews = await Review.findAll({
+            include: User,
+            where: {
+                gameId: request.params.id
+            }
+        });
         return response.json(reviews);
     },
     async show(request, response) {
