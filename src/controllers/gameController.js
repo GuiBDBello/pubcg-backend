@@ -142,7 +142,7 @@ module.exports = {
                 && data.gameDirectory && data.fileDestination) {
 
                 await s3.uploadFile(`public/games/medias/${mediaFile.filename}`,
-                    data.fileDestination);
+                    `${data.mediaDestination}/${mediaFile.filename}`);
             }
         });
 
