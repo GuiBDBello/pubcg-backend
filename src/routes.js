@@ -58,6 +58,7 @@ routes.get("/", (request, response) => {
 
 // Games
 routes.get("/games", GameController.index);
+routes.get("/games/user/:id", GameController.indexUser);
 routes.get("/games/:id", GameController.show);
 routes.post("/games", upload.fields([
     { name: "file", maxCount: 1 },

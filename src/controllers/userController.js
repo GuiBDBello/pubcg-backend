@@ -3,6 +3,8 @@ const User = require('../models/user');
 const fs = require("fs");
 const path = require("path");
 
+const s3 = require("../s3Client");
+
 async function moveFile(oldPath, newPath, directory) {
     console.log("Moving from oldPath", oldPath, "\nto newPath", newPath, "\ninto directory", directory);
 

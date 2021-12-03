@@ -8,6 +8,7 @@ AWS.config.apiVersions = {
 
 function getContentType(filePath) {
     if (filePath.endsWith('.css')) return 'text/css';
+    else if (filePath.endsWith('.data')) return 'binary/octet-stream';
     else if (filePath.endsWith('.gif')) return 'image/gif';
     else if (filePath.endsWith('.html')) return 'text/html';
     else if (filePath.endsWith('.ico')) return 'image/x-icon';
@@ -15,6 +16,7 @@ function getContentType(filePath) {
     else if (filePath.endsWith('.json')) return 'application/json';
     else if (filePath.endsWith('.png')) return 'image/png';
     else if (filePath.endsWith('.unityweb')) return 'binary/octet-stream';
+    else if (filePath.endsWith('.wasm')) return 'application/wasm';
     else return '';
 }
 

@@ -1,6 +1,7 @@
 const Game = require("../models/game");
 // Má prática, eu sei, mas to sem tempo
 const Media = require("../models/media");
+const User = require("../models/user");
 
 const fs = require("fs");
 const path = require("path");
@@ -81,6 +82,15 @@ module.exports = {
         let games = await Game.findAll();
         return response.json(games);
     },
+    async indexUser(request, response) {
+        let games = await Game.findAll({
+            include: User,
+            where: {
+                developerId: request.params.id
+            }
+        });
+        return response.json(games);
+    },
     async show(request, response) {
         let game = await Game.findByPk(request.params.id);
         return response.json(game);
@@ -139,9 +149,9 @@ module.exports = {
             console.log("media", media);
 
             if (process.env.NODE_ENV.toUpperCase() === "PRD"
-                && data.gameDirectory && data.fileDestination) {
+                && data.gameDirectory && data.mediaDestination) {
 
-                await s3.uploadFile(`public/games/medias/${mediaFile.filename}`,
+                await s3.uploadFile(`public/games/${data.gameDirectory}/medias/${mediaFile.filename}`,
                     `${data.mediaDestination}/${mediaFile.filename}`);
             }
         });

@@ -5,7 +5,7 @@ Aplicação backend desenvolvida para o Desafio de Inovação: Gaming for Life S
 ## .env
 
 ```
-ALLOWED_ORIGINS=http://127.0.0.1:3000, http://localhost:3000, https://pubcg.netlify.app, <Your External IP>
+ALLOWED_ORIGINS=<Your External IP>, http://127.0.0.1:3000, http://localhost:3000, https://pubcg.netlify.app
 
 AWS_ACCESS_KEY_ID=<AWS Access Key>
 AWS_SECRET_ACCESS_KEY=<AWS Secret Access Key>
